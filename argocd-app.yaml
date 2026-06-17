@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     
-    repoURL: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+    repoURL: 'git@github.com:feitais/guana-test.git'
     targetRevision: HEAD
     path: 'apps' # Path to your job.yaml
   destination:
