@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aws-mock
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-mock
+  namespace: aws-mock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-mock
+  template:
+    metadata:
+      labels:
+        app: s3-mock
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio:latest
+        args:
+        - server
+        - /data
+        env:
+        - name: MINIO_ROOT_USER
+          value: "mock_aws_access_key"
+        - name: MINIO_ROOT_PASSWORD
+          value: "mock_aws_secret_key"
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3-service
+  namespace: aws-mock
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+    name: api
+  - port: 9001
+    targetPort: 9001
+    name: console
+  selector:
+    app: s3-mock
