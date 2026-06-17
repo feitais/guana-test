@@ -31,6 +31,10 @@ spec:
           value: "http://s3-service.aws-mock.svc.cluster.local:9000"
         - name: AWS_DEFAULT_REGION
           value: "us-east-1"
+        - name: MLFLOW_S3_IGNORE_TLS
+          value: "true"
+        - name: AWS_ATTEMPTS_MAX_RETRIES
+          value: "5"
         ports:
         - containerPort: 5000
 ---
