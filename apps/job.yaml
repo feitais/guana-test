@@ -4,15 +4,46 @@ metadata:
   name: python-ml-pipeline-run
   namespace: mlflow
   annotations:
-    # This hook tells ArgoCD to delete the old job and run a fresh one every time you sync
     argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   template:
     spec:
+      # 1. Shared workspace volume
+      volumes:
+      - name: pipeline-data
+        emptyDir: {}
+
+      # 2. Step One: The Download Step (Init Container)
+      initContainers:
+      - name: download-s3-file
+        image: amazon/aws-cli:latest # Official AWS CLI image
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Starting file download from mock S3..."
+            # Using --endpoint-url to route to your cluster's local MinIO
+            aws s3 cp s3://mlflow-bucket/dataset.csv /workspace/dataset.csv --endpoint-url http://s3-service.aws-mock.svc.cluster.local:9000
+            echo "Download complete!"
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: "mock_aws_access_key"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "mock_aws_secret_key"
+        - name: AWS_DEFAULT_REGION
+          value: "us-east-1"
+        volumeMounts:
+        - name: pipeline-data
+          mountPath: /workspace
+
+      # 3. Step Two: The Main Python Container
       containers:
       - name: pipeline
         image: local-python-pipeline:latest
-        imagePullPolicy: Never # Forces Kubernetes to use the local image you just built
+        imagePullPolicy: Never
+        volumeMounts:
+        - name: pipeline-data
+          mountPath: /workspace # Mounts the same folder containing dataset.csv
+      
       restartPolicy: Never
   backoffLimit: 1

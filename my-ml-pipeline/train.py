@@ -1,19 +1,25 @@
 import os
 import mlflow
+import pandas as pd # If you use pandas, ensure it's in requirements.txt
 
-# Point to internal cluster services
+# AWS/MLflow configuration env vars...
 os.environ["MLFLOW_TRACKING_URI"] = "http://mlflow-service.mlflow.svc.cluster.local:5000"
-os.environ["AWS_ACCESS_KEY_ID"] = "mock_aws_access_key"
-os.environ["AWS_SECRET_ACCESS_KEY"] = "mock_aws_secret_key"
-os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://s3-service.aws-mock.svc.cluster.local:9000"
 
 def main():
+    file_path = "/workspace/dataset.csv"
+    
+    if os.path.exists(file_path):
+        print(f"Success! Found file at {file_path}")
+        # Your pipeline processing logic here:
+        # df = pd.read_csv(file_path)
+    else:
+        print(f"Error: File not found at {file_path}")
+        return
+
     mlflow.set_experiment("ArgoCD_Pipeline_Run")
     with mlflow.start_run():
-        print("Running training logic...")
-        mlflow.log_param("epochs", 10)
-        mlflow.log_metric("loss", 0.02)
-        print("Successfully logged to MLflow!")
+        mlflow.log_param("data_source", "local_s3")
+        mlflow.log_metric("data_rows", 1500) 
 
 if __name__ == "__main__":
     main()
