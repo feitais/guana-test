@@ -6,14 +6,20 @@ metadata:
 spec:
   project: default
   source:
-    
-    repoURL: 'git@github.com:feitais/guana-test.git'
+    repoURL: 'git@github.com:feitais/guana-test.git' 
     targetRevision: HEAD
-    path: 'apps' # Path to your job.yaml
+    path: 'apps'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mlflow
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    # We turn off automated sync temporarily to fix the button loop
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true # This forces ArgoCD to replace resources instead of updating them
+
+
+
+
+    
+     
