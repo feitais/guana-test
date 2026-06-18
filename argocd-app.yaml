@@ -9,7 +9,7 @@ spec:
     # CHANGE THIS to your actual GitHub or GitLab repository link
     repoURL: 'https://github.com/feitais/guana-test.git'
     targetRevision: HEAD
-    path: 'apps' # The folder inside your repo where ray-pipeline.yaml is saved
+    path: '.' # The folder inside your repo where ray-pipeline.yaml is saved
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mlflow
