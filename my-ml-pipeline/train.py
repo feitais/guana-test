@@ -1,6 +1,5 @@
 import os
 import mlflow
-import pandas as pd # If you use pandas, ensure it's in requirements.txt
 
 # AWS/MLflow configuration env vars...
 os.environ["MLFLOW_TRACKING_URI"] = "http://mlflow-service.mlflow.svc.cluster.local:5000"
