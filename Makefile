@@ -5,7 +5,7 @@ NAMESPACE_KUBERAY = kuberay
 .PHONY: up down status deploy-infra deploy-kuberay sync-argocd setup-s3 port-forward-mlflow port-forward-argocd
 
 up:
-	-colima start --cpu 4 --memory 10
+	-colima start --cpu 4 --memory 16
 	minikube start --driver=docker --cpus=4 --memory=8192 --disk-size=40g
 	minikube addons enable ingress
 
