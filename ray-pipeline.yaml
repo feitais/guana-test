@@ -4,7 +4,7 @@ metadata:
   name: distributed-training-pipeline
   namespace: mlflow
 spec:
-  submissionId: "mlflow-run-01"
+  jobId: "mlflow-run-01"
   # The exact python script you want to run inside the cluster
   entrypoint: "python3 train.py"
   
