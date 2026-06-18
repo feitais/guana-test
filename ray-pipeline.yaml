@@ -1,0 +1,41 @@
+apiVersion: ray.io/v1
+kind: RayJob
+metadata:
+  name: distributed-training-pipeline
+  namespace: mlflow
+spec:
+  submissionId: "mlflow-run-01"
+  # The exact python script you want to run inside the cluster
+  entrypoint: "python3 train.py"
+  
+  # Configuration layout for the Ray cluster infrastructure
+  rayClusterSpec:
+    rayVersion: '2.9.0'
+    headGroupSpec:
+      rayStartParams:
+        dashboard-host: '0.0.0.0'
+      template:
+        spec:
+          containers:
+            - name: ray-head
+              image: rayproject/ray:2.9.0-py310
+              env:
+                - name: MLFLOW_TRACKING_URI
+                  value: "http://mlflow-service.mlflow.svc.cluster.local:5000"
+                - name: AWS_ACCESS_KEY_ID
+                  value: "mock_aws_access_key"
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: "mock_aws_secret_key"
+                - name: MLFLOW_S3_ENDPOINT_URL
+                  value: "http://s3-service.mlflow.svc.cluster.local:9000"
+    workerGroupSpecs:
+      - groupName: worker-nodes
+        replicas: 2
+        minReplicas: 1
+        maxReplicas: 5
+        rayStartParams: {}
+        template:
+          spec:
+            containers:
+              - name: ray-worker
+                image: rayproject/ray:2.9.0-py310
