@@ -8,6 +8,13 @@ spec:
   # The exact python script you want to run inside the cluster
   entrypoint: "python3 train.py"
   
+  runtimeEnvYAML: |
+    working_dir: "https://github.com/feitais/guana-test/archive/refs/heads/main.zip"
+    pip:
+      - pandas
+      - scikit-learn
+      - mlflow
+
   # Configuration layout for the Ray cluster infrastructure
   rayClusterSpec:
     rayVersion: '2.9.0'
