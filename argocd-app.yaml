@@ -1,25 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: python-pipeline
+  name: distributed-kuberay-pipeline
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:feitais/guana-test.git' 
+    # CHANGE THIS to your actual GitHub or GitLab repository link
+    repoURL: 'https://github.com/feitais/guana-test.git'
     targetRevision: HEAD
-    path: 'apps'
+    path: 'apps' # The folder inside your repo where ray-pipeline.yaml is saved
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mlflow
   syncPolicy:
-    # We turn off automated sync temporarily to fix the button loop
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - Replace=true # This forces ArgoCD to replace resources instead of updating them
-
-
-
-
-    
-     
+      - Replace=true
